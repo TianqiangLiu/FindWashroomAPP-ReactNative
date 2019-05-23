@@ -2,7 +2,7 @@
  * @Author: Tianqiang Liu 
  * @Date: 2019-05-06 15:10:28 
  * @Last Modified by: Tianqiang Liu
- * @Last Modified time: 2019-05-07 15:39:58
+ * @Last Modified time: 2019-05-14 13:50:08
  */
 var express = require('express');
 var router = express.Router();
@@ -92,6 +92,10 @@ router.post('/write',function(req,res,next){
 //Articles
 router.post('/write-config',function(req,res,next){
     //TODO:data validation.
+    //stop xss attack
+    //npm install xss
+    //require('xss')
+    // var str = xss(name);
     var data = req.body.data;
     //TODO:tryCatch
     var obj = JSON.parse(data);
@@ -110,6 +114,31 @@ router.post('/write-config',function(req,res,next){
     });
 });
 
+//Login interface
+router.post('/login',function(req,res,next){
+    //username, password, identify password
+    var username = req.body.username;
+    var password = req.body.password;
+
+    //TODO : validating username or password
+    //xss stop
+
+    //password encrpytion md5(password + 'random')
+    //then write to .json
+    if(username === 'admin' && password === '123456' ){
+        req.session.user = {
+            username: username
+        };
+        return res.send({
+            status: 1
+        });
+    }
+    return res.send({
+        status: 0,
+        info: 'password wrong'
+    });
+
+});
 
 //GUID
 function guidGenerate(){
