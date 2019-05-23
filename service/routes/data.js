@@ -2,7 +2,7 @@
  * @Author: Tianqiang Liu 
  * @Date: 2019-05-06 15:10:28 
  * @Last Modified by: Tianqiang Liu
- * @Last Modified time: 2019-05-14 13:50:08
+ * @Last Modified time: 2019-05-23 10:48:23
  */
 var express = require('express');
 var router = express.Router();
@@ -39,6 +39,12 @@ router.get('/read', function(req, res, next) {
 
 //Data Saveing developing
 router.post('/write',function(req,res,next){
+    if(!req.session.user){
+        return res.send({
+            status:0,
+            info: 'need to login'
+        });
+      }
     //name
     var type = req.param('type') || '';
     //keyword
@@ -60,7 +66,8 @@ router.post('/write',function(req,res,next){
                 info:'error read file'
             });
         }
-        var arr = JSON.parse(data.toString());
+
+        var arr  = JSON.parse(data.toString());
         //Log
         var obj = {
             img: img,
@@ -69,7 +76,8 @@ router.post('/write',function(req,res,next){
             id: guidGenerate(),
             time:new Date()
         };
-        arr.splice(0,0,obj);
+        
+        arr.splice(0, 0, obj);
 
         //2)write file
         var newData = JSON.stringify(arr);
@@ -91,6 +99,12 @@ router.post('/write',function(req,res,next){
 
 //Articles
 router.post('/write-config',function(req,res,next){
+    if(!req.session.user){
+        return res.send({
+            status:0,
+            info: 'need to login'
+        });
+      }
     //TODO:data validation.
     //stop xss attack
     //npm install xss
